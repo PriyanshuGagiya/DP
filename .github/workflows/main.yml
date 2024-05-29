@@ -16,20 +16,45 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
-    - name: Send POST requests for modified or added YAML files
+    - name: Set up Git
       run: |
-        for file in $(git diff --name-only --diff-filter=AM ${{ github.sha }}^..${{ github.sha }} | grep -E 'Charts/.*\.(yml|yaml)'); do
-          author_name=$(git log -1 --pretty=format:'%an' -- "$file")
-          author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
-          content=$(cat "$file" | jq -Rs .)
-          payload=$(jq -n \
-            --arg file "$file" \
-            --arg author_name "$author_name" \
-            --arg author_email "$author_email" \
-            --arg content "$content" \
-            '{file: $file, author: {name: $author_name, email: $author_email}, content: $content}')
-          curl -X POST -H "Content-Type: application/json" -d "$payload" https://8874-14-194-6-234.ngrok-free.app/webhook/github
-        done
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    - name: Check if app.yaml changed
+      id: check_diff
+      run: |
+        if git diff --exit-code HEAD^ HEAD -- config/app.yaml; then
+          echo "changed=true" >> $GITHUB_ENV
+        else
+          echo "changed=false" >> $GITHUB_ENV
+        fi
+    - name: Post changes if app.yaml changed
+      if: env.changed == 'true'
+      run: | # Extract the diff of app.yaml
+          DIFF=$(git diff HEAD^ HEAD -- config/app.yaml)
+          
+          # Post the diff to the specified URL
+          curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
+            -H "Content-Type: application/json" \
+            -d "{\"diff\": \"${DIFF}\"}"
+      # steps:
+    # - name: Checkout repository
+    #   uses: actions/checkout@v2
+      
+    # - name: Send POST requests for modified or added YAML files
+    #   run: |
+    #     for file in $(git diff --name-only --diff-filter=AM ${{ github.sha }}^..${{ github.sha }} | grep -E 'Charts/.*\.(yml|yaml)'); do
+    #       author_name=$(git log -1 --pretty=format:'%an' -- "$file")
+    #       author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
+    #       content=$(cat "$file" | jq -Rs .)
+    #       payload=$(jq -n \
+    #         --arg file "$file" \
+    #         --arg author_name "$author_name" \
+    #         --arg author_email "$author_email" \
+    #         --arg content "$content" \
+    #         '{file: $file, author: {name: $author_name, email: $author_email}, content: $content}')
+    #       curl -X POST -H "Content-Type: application/json" -d "$payload" https://8874-14-194-6-234.ngrok-free.app/webhook/github
+    #     done
 
     # - name: Find changed YAML files
     #   id: find_yaml_files
