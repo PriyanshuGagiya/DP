@@ -1,0 +1,72 @@
+name: Notify YAML Changes in Charts
+
+on:
+  push:
+    branches:
+      - main  # Specify the branch here
+    paths:
+      - 'Charts/**/*.yaml'
+      - 'Charts/**/*.yml'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Find changed YAML files
+      id: find_yaml_files
+      run: |
+        # Get list of added, modified, and deleted yaml files
+        files=$(git diff --name-status ${{ github.event.before }} ${{ github.sha }} | grep -E 'Charts/.*\.(yml|yaml)' || true)
+        
+        # Save the output to a file
+        echo "${files}" > changed_files.txt
+
+    - name: Prepare data for POST request
+      id: prepare_post_data
+      run: |
+        # Initialize the JSON payload
+        json_payload="[]"
+        
+        # Iterate through each changed file
+        while read -r line; do
+          status=$(echo $line | awk '{print $1}')
+          file=$(echo $line | awk '{print $2}')
+          
+          if [[ "$status" == "D" ]]; then
+            # For deleted files, we don't include content
+            content="{}"
+          else
+            # For added or modified files, include the file content
+            content=$(cat $file | jq -Rs .)
+          fi
+          
+          # Get the file author details
+          author_name=$(git log -1 --pretty=format:'%an' -- $file)
+          author_email=$(git log -1 --pretty=format:'%ae' -- $file)
+          
+          # Create JSON object for the current file
+          file_json=$(jq -n \
+            --arg file "$file" \
+            --arg status "$status" \
+            --arg author_name "$author_name" \
+            --arg author_email "$author_email" \
+            --arg content "$content" \
+            '{file: $file, status: $status, author: {name: $author_name, email: $author_email}, content: $content}')
+          
+          # Add the current file's JSON object to the array
+          json_payload=$(echo $json_payload | jq --argjson new_file "$file_json" '. + [$new_file]')
+        done < changed_files.txt
+
+        # Save the final JSON payload to a file
+        echo $json_payload | jq '.' > payload.json
+
+    - name: Send POST request
+      run: |
+        curl -X POST \
+          -H "Content-Type: application/json" \
+          -d @payload.json \
+          https://8874-14-194-6-234.ngrok-free.app/webhook/github
