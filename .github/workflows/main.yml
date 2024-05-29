@@ -1,28 +1,56 @@
-name: Trigger on YAML file changes
+name: Check and Post app.yaml Changes
 
-on:
+on: 
   push:
-    paths:
-      - 'Charts/**.yaml'
+    branches:
+      - main  # or any branch you want to monitor
 
 jobs:
-  send_post_request:
+  check_and_post:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Get list of changed YAML files
-        id: get_files
-        run: |
-          echo "::set-output name=changed_files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^Charts/.*\.yaml$')"
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Iterate over changed files and send POST request
-        run: |
-          for file in ${{ steps.get_files.outputs.changed_files }}; do
-            # Extract author name from git log
-            author=$(git log -1 --format='%an' -- "${file}")
-            # Send POST request with author name and file contents
-            curl -X POST -H "Content-Type: application/json" -d '{"author": "'"$author"'", "file": "'"$file"'", "contents": "'"$(cat $file)"'"}' https://192c-203-110-85-250.ngrok-free.app/api
-          done
+    - name: Check if app.yaml changed
+      id: check_diff
+      run: |
+        # Check if there is a previous commit
+        if [ $(git rev-list --count HEAD) -gt 1 ]; then
+          # There is a previous commit, check if app.yaml changed
+          if git diff --exit-code HEAD^ HEAD -- config/app.yaml; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+          fi
+        else
+          # No previous commit, consider the file as changed
+          echo "changed=true" >> $GITHUB_ENV
+        fi
+
+    - name: Post changes if app.yaml changed
+      if: env.changed == 'true'
+      run: |
+        # Extract the diff of app.yaml
+        if [ $(git rev-list --count HEAD) -gt 1 ]; then
+          DIFF=$(git diff HEAD^ HEAD -- config/app.yaml)
+        else
+          DIFF=$(git show HEAD:config/app.yaml)
+        fi
+        
+        # Get the commit metadata
+        AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
+        AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
+        COMMIT_HASH=$(git log -1 --pretty=format:'%H')
+        COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')
+
+        # Post the diff and metadata to the specified URL
+        curl -X POST https://192c-203-110-85-250.ngrok-free.app/api \
+          -H "Content-Type: application/json" \
+          -d "{\"diff\": \"${DIFF}\", \"authorName\": \"${AUTHOR_NAME}\", \"authorEmail\": \"${AUTHOR_EMAIL}\", \"commitHash\": \"${COMMIT_HASH}\", \"commitMessage\": \"${COMMIT_MESSAGE}\"}"
