@@ -1,4 +1,4 @@
-name: Notify YAML Changes in Charts
+name: YAML Change Notifier for Charts
 
 on:
   push:
@@ -20,34 +20,31 @@ jobs:
       id: find_yaml_files
       run: |
         # Get list of added, modified, and deleted yaml files
-        files=$(git diff --name-status ${{ github.event.before }} ${{ github.sha }} | grep -E 'Charts/.*\.(yml|yaml)' || true)
-        
-        # Save the output to a file
-        echo "${files}" > changed_files.txt
+        git diff --name-status ${{ github.event.before }} ${{ github.sha }} | grep -E 'Charts/.*\.(yml|yaml)' > changed_files.txt || true
 
     - name: Prepare data for POST request
       id: prepare_post_data
       run: |
         # Initialize the JSON payload
         json_payload="[]"
-        
+
         # Iterate through each changed file
-        while read -r line; do
-          status=$(echo $line | awk '{print $1}')
-          file=$(echo $line | awk '{print $2}')
-          
+        while IFS= read -r line; do
+          status=$(echo "$line" | awk '{print $1}')
+          file=$(echo "$line" | awk '{print $2}')
+
           if [[ "$status" == "D" ]]; then
             # For deleted files, we don't include content
-            content="{}"
+            content=""
           else
             # For added or modified files, include the file content
-            content=$(cat $file | jq -Rs .)
+            content=$(cat "$file" | jq -Rs .)
           fi
-          
+
           # Get the file author details
-          author_name=$(git log -1 --pretty=format:'%an' -- $file)
-          author_email=$(git log -1 --pretty=format:'%ae' -- $file)
-          
+          author_name=$(git log -1 --pretty=format:'%an' -- "$file")
+          author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
+
           # Create JSON object for the current file
           file_json=$(jq -n \
             --arg file "$file" \
@@ -56,13 +53,13 @@ jobs:
             --arg author_email "$author_email" \
             --arg content "$content" \
             '{file: $file, status: $status, author: {name: $author_name, email: $author_email}, content: $content}')
-          
+
           # Add the current file's JSON object to the array
-          json_payload=$(echo $json_payload | jq --argjson new_file "$file_json" '. + [$new_file]')
+          json_payload=$(echo "$json_payload" | jq --argjson new_file "$file_json" '. + [$new_file]')
         done < changed_files.txt
 
         # Save the final JSON payload to a file
-        echo $json_payload | jq '.' > payload.json
+        echo "$json_payload" | jq '.' > payload.json
 
     - name: Send POST request
       run: |
