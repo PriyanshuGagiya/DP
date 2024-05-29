@@ -37,6 +37,11 @@ jobs:
           curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
             -H "Content-Type: application/json" \
             -d "{\"diff\": \"${DIFF}\"}"
+    - name: demo
+      run: |
+         curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
+            -H "Content-Type: application/json" \
+            -d "{\"diff\": \"HELLO\"}"
       # steps:
     # - name: Checkout repository
     #   uses: actions/checkout@v2
