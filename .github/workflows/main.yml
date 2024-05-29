@@ -20,28 +20,23 @@ jobs:
       run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-    - name: Check if app.yaml changed
-      id: check_diff
-      run: |
-        if git diff --exit-code HEAD^ HEAD -- config/app.yaml; then
-          echo "changed=true" >> $GITHUB_ENV
-        else
-          echo "changed=false" >> $GITHUB_ENV
-        fi
-    - name: Post changes if app.yaml changed
-      if: env.changed == 'true'
-      run: | # Extract the diff of app.yaml
-          DIFF=$(git diff HEAD^ HEAD -- config/app.yaml)
-          
-          # Post the diff to the specified URL
-          curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
-            -H "Content-Type: application/json" \
-            -d "{\"diff\": \"${DIFF}\"}"
     - name: demo
       run: |
          curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
             -H "Content-Type: application/json" \
             -d "{\"diff\": \"HELLO\"}"
+    - name: hello
+      run: |
+          # Store the diff output in a variable
+          changes=$(git diff HEAD^ HEAD)
+          # Iterate over each change
+          while read -r line; do
+              # Process each change, you can do whatever you want with $line here
+              curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
+                -H "Content-Type: application/json" \
+                -d "{\"diff\": \"$line\"}"
+          done <<< "$changes"
+
       # steps:
     # - name: Checkout repository
     #   uses: actions/checkout@v2
