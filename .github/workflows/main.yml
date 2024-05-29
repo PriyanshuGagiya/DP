@@ -20,9 +20,6 @@ jobs:
 
       - name: Iterate over changed files and send POST request
         run: |
-          for file in ${{ steps.get_files.outputs.changed_files }}; do
-            # Extract author name from git log
             author=$(git log -1 --format='%an' -- "${file}")
             # Send POST request with author name and file contents
-            curl -X POST -H "Content-Type: application/json" -d '{"author": "'"$author"'", "file": "'"$file"'", "contents": "'"$(cat $file)"'"}' https://192c-203-110-85-250.ngrok-free.app/api
-          done
+            curl -X POST -H "Content-Type: application/json" -d '{"author": "'"$author"'", "file": "'"$file"'", "contents": "'"$(cat $file)"'"}' https://8874-14-194-6-234.ngrok-free.app/webhook/github
