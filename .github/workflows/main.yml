@@ -27,15 +27,22 @@ jobs:
             -d "{\"diff\": \"HELLO\"}"
     - name: hello
       run: |
-          # Store the diff output in a variable
-          changes=$(git diff HEAD^ HEAD)
-          # Iterate over each change
-          while read -r line; do
-              # Process each change, you can do whatever you want with $line here
-              curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
-                -H "Content-Type: application/json" \
-                -d "{\"diff\": \"$line\"}"
-          done <<< "$changes"
+          #!/bin/bash
+          # Check if there are commits before HEAD
+          if [ $(git rev-parse --verify HEAD^ 2>/dev/null) ]; then
+              # Store the diff output in a variable
+              changes=$(git diff HEAD^ HEAD)
+          
+              # Iterate over each change
+              while IFS= read -r line; do
+                  # Process each change and perform a POST request with curl
+                  curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
+                      -H "Content-Type: application/json" \
+                      -d "{\"diff\": \"$line\"}"
+              done <<< "$changes"
+          else
+              echo "No parent commit exists before HEAD."
+          fi
 
       # steps:
     # - name: Checkout repository
