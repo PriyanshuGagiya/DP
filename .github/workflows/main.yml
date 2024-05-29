@@ -25,7 +25,7 @@ jobs:
       id: find_yaml_files
       run: |
         # Get the list of changed files
-        git diff --name-status HEAD^ HEAD | grep -E 'Charts/.*\.(yml|yaml)' > changed_files.txt
+        git diff --name-status HEAD~1 HEAD | grep -E 'Charts/.*\.(yml|yaml)' > changed_files.txt
         echo "Changed files:"
         cat changed_files.txt
 
@@ -56,9 +56,7 @@ jobs:
             curl -X POST \
               -H "Content-Type: application/json" \
               -d "$payload" \
-               https://8874-14-194-6-234.ngrok-free.app/webhook/github
+              https://8874-14-194-6-234.ngrok-free.app/webhook/github
           fi
 
         done < changed_files.txt
-
-     
