@@ -30,35 +30,28 @@ jobs:
           status=$(echo "$line" | awk '{print $1}')
           file=$(echo "$line" | awk '{print $2}')
 
-          if [[ -z "$file" ]]; then
-            continue
-          fi
-
-          if [[ "$status" == "D" ]]; then
-            # For deleted files, set content to empty
-            content=""
-          else
-            # For added or modified files, get the file content
+          if [[ -f "$file" ]]; then
+            # Get the file content
             content=$(cat "$file" | jq -Rs .)
+
+            # Get the commit author details
+            author_name=$(git log -1 --pretty=format:'%an' -- "$file")
+            author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
+
+            # Prepare the JSON payload
+            payload=$(jq -n \
+              --arg file "$file" \
+              --arg status "$status" \
+              --arg author_name "$author_name" \
+              --arg author_email "$author_email" \
+              --arg content "$content" \
+              '{file: $file, status: $status, author: {name: $author_name, email: $author_email}, content: $content}')
+
+            # Send the POST request
+            curl -X POST \
+              -H "Content-Type: application/json" \
+              -d "$payload" \
+              https://your-webhook-url.com/endpoint
           fi
-
-          # Get the commit author details
-          author_name=$(git log -1 --pretty=format:'%an' -- "$file")
-          author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
-
-          # Prepare the JSON payload
-          payload=$(jq -n \
-            --arg file "$file" \
-            --arg status "$status" \
-            --arg author_name "$author_name" \
-            --arg author_email "$author_email" \
-            --arg content "$content" \
-            '{file: $file, status: $status, author: {name: $author_name, email: $author_email}, content: $content}')
-
-          # Send the POST request
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "$payload" \
-            https://8874-14-194-6-234.ngrok-free.app/webhook/github
 
         done < changed_files.txt
