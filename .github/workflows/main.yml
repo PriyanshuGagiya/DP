@@ -18,8 +18,13 @@ jobs:
       with:
         fetch-depth: '3'
 
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
     - name: Install yq
-      run: sudo apt-get install -y yq
+      run: pip install yq
 
     - name: Send POST requests for modified or added YAML files
       run: |
