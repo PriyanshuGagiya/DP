@@ -2,5 +2,5 @@ key : abc.12335
 property: abc.12343
 value : false
 reason : "pr changed this"
-deleted : true
+deleted : false
 
