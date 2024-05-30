@@ -28,13 +28,6 @@ jobs:
           value=""
           reason=""
           deleted=""
-          while IFS= read -r line; do
-            key=$(echo "$line" | grep -oP 'key\s*:\s*\K.*')
-            property=$(echo "$line" | grep -oP 'property\s*:\s*\K.*')
-            value=$(echo "$line" | grep -oP 'value\s*:\s*\K.*')
-            reason=$(echo "$line" | grep -oP 'reason\s*:\s*\K.*')
-            deleted=$(echo "$line" | grep -oP 'deleted\s*:\s*\K.*')
-            if [ -n "$key" ] && [ -n "$property" ] && [ -n "$value" ] && [ -n "$reason" ] && [ -n "$deleted" ]; then
               payload=$(jq -n \
                 --arg file "$file" \
                 --arg author_name "$author_name" \
@@ -47,12 +40,6 @@ jobs:
                 '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
               
               curl -X POST -H "Content-Type: application/json" -d "$payload" https://8a81-14-194-6-234.ngrok-free.app/webhook/github
-             
-              key=""
-              property=""
-              value=""
-              reason=""
-              deleted=""
             fi
           done < "$file"
         done
