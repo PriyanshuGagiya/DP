@@ -23,11 +23,11 @@ jobs:
         for file in $(git diff --name-only --diff-filter=AM HEAD^1 HEAD | grep -E 'Charts/.*\.(yml|yaml)'); do
           author_name=$(git log -1 --pretty=format:'%an' -- "$file")
           author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
-          key=$(yq r "$file" 'key')
-          property=$(yq r "$file" 'property')
-          value=$(yq r "$file" 'value')
-          reason=$(yq r "$file" 'reason')
-          deleted=$(yq r "$file" 'deleted // false')
+          key=$(yq eval '.key' "$file")
+          property=$(yq eval '.property' "$file")
+          value=$(yq eval '.value' "$file")
+          reason=$(yq eval '.reason' "$file")
+          deleted=$(yq eval '.deleted // false' "$file")
           payload=$(jq -n \
             --arg file "$file" \
             --arg author_name "$author_name" \
@@ -40,7 +40,6 @@ jobs:
             '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
           curl -X POST -H "Content-Type: application/json" -d "$payload" https://8a81-14-194-6-234.ngrok-free.app/webhook/github
         done
-
 
 # name: YAML Change Notifier for Charts
 
