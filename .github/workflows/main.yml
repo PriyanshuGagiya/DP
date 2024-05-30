@@ -24,6 +24,7 @@ jobs:
             -d "{\"diff\": \"$var\"}"
     - name: Store changed files
       run: |
+          ls
           var=$(git diff --name-only -r HEAD^1 HEAD)
           # var=$(git log)
           echo $var
