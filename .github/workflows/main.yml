@@ -23,26 +23,18 @@ jobs:
         for file in $(git diff --name-only --diff-filter=AM HEAD^1 HEAD | grep -E 'Charts/.*\.(yml|yaml)'); do
           author_name=$(git log -1 --pretty=format:'%an' -- "$file")
           author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
-          
-          # Initialize variables
           key=""
           property=""
           value=""
           reason=""
           deleted=""
-          
-          # Read file line by line
           while IFS= read -r line; do
-            # Extract key and value pairs
             key=$(echo "$line" | grep -oP 'key\s*:\s*\K.*')
             property=$(echo "$line" | grep -oP 'property\s*:\s*\K.*')
             value=$(echo "$line" | grep -oP 'value\s*:\s*\K.*')
             reason=$(echo "$line" | grep -oP 'reason\s*:\s*\K.*')
             deleted=$(echo "$line" | grep -oP 'deleted\s*:\s*\K.*')
-            
-            # Construct payload if all fields are found
             if [ -n "$key" ] && [ -n "$property" ] && [ -n "$value" ] && [ -n "$reason" ] && [ -n "$deleted" ]; then
-              # Construct payload
               payload=$(jq -n \
                 --arg file "$file" \
                 --arg author_name "$author_name" \
@@ -54,10 +46,8 @@ jobs:
                 --arg deleted "$deleted" \
                 '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
               
-              # Send payload using curl
               curl -X POST -H "Content-Type: application/json" -d "$payload" https://8a81-14-194-6-234.ngrok-free.app/webhook/github
-              
-              # Reset variables for next iteration
+             
               key=""
               property=""
               value=""
