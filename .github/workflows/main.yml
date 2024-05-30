@@ -18,12 +18,8 @@ jobs:
       with:
         fetch-depth: '3'
 
-    - name: Install jq and yq
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
-        wget https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_amd64 -O /usr/bin/yq
-        sudo chmod +x /usr/bin/yq
+    - name: Install yq
+      run: sudo apt-get install -y yq
 
     - name: Send POST requests for modified or added YAML files
       run: |
@@ -53,7 +49,6 @@ jobs:
           # Send the payload
           curl -X POST -H "Content-Type: application/json" -d "$payload" https://8a81-14-194-6-234.ngrok-free.app/webhook/github
         done
-
 
 # name: YAML Change Notifier for Charts
 
