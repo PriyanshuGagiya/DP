@@ -14,14 +14,22 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       
     - name: Set up Git
       run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    - name: Store changed files
+      run: |
+          var=$(git diff --name-only -r HEAD^1 HEAD)
+          
+          curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
+            -H "Content-Type: application/json" \
+            -d "{\"diff\": \"$var\"}"
+          
     - name: demo
       run: |
-         curl -X POST https://8874-14-194-6-234.ngrok-free.app/webhook/github \
+         curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
             -H "Content-Type: application/json" \
             -d "{\"diff\": \"HELLO\"}"
