@@ -16,10 +16,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Set up Git
+    - name: send commiter
       run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          var=$(git log -1 --pretty=format:'%an')
+          curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
+            -H "Content-Type: application/json" \
+            -d "{\"diff\": \"$var\"}"
     - name: Store changed files
       run: |
           var=$(git diff --name-only -r HEAD^1 HEAD)
