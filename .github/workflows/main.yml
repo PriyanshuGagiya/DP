@@ -26,12 +26,13 @@ jobs:
       run: |
           var=$(git diff --name-only -r HEAD^1 HEAD)
           # var=$(git log)
-          curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
-            -H "Content-Type: application/json" \
-            -d "{\"diff\": \"$var\"}"
+          echo $var
+    #       curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
+    #         -H "Content-Type: application/json" \
+    #         -d "{\"diff\": \"$var\"}"
           
-    - name: demo
-      run: |
-         curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
-            -H "Content-Type: application/json" \
-            -d "{\"diff\": \"HELLO\"}"
+    # - name: demo
+    #   run: |
+    #      curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
+    #         -H "Content-Type: application/json" \
+    #         -d "{\"diff\": \"HELLO\"}"
