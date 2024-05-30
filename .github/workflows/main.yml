@@ -35,7 +35,7 @@ jobs:
     #          -d "{\"diff\": \"$var\"}"
     - name: Send POST requests for modified or added YAML files
       run: |
-        snap install yq
+        sudo snap install yq
         sudo cat /etc/myfile | yq '.a.path'
         for file in $(git diff --name-only --diff-filter=AM HEAD^1 HEAD | grep -E 'Charts/.*\.(yml|yaml)'); do
             author_name=$(git log -1 --pretty=format:'%an' -- "$file")
