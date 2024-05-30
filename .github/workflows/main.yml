@@ -38,7 +38,7 @@ jobs:
             --arg reason "$reason" \
             --argjson deleted "$deleted" \
             '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
-          curl -X POST -H "Content-Type: application/json" -d "$payload" https://8a81-14-194-6-234.ngrok-free.app/webhook/github
+          curl -X POST -H "Content-Type: application/json" -d "$payload" https://8a81-14-194-6-234.ngrok-free.app/api/dp
         done
 
 # name: YAML Change Notifier for Charts
