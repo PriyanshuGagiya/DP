@@ -18,21 +18,21 @@ jobs:
       with:
           fetch-depth: '3'
       
-    - name: send commiter
-      run: |
-          var=$(git log -1 --pretty=format:'%an')
-          curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
-            -H "Content-Type: application/json" \
-            -d "{\"diff\": \"$var\"}"
-    - name: Store changed files
-      run: |
-          ls
-          var=$(git diff --name-only -r HEAD^1 HEAD)
-          # var=$(git log)
-          echo $var
+    # - name: send commiter
+    #   run: |
+    #       var=$(git log -1 --pretty=format:'%an')
     #       curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
     #         -H "Content-Type: application/json" \
     #         -d "{\"diff\": \"$var\"}"
+    # - name: Store changed files
+    #   run: |
+    #       ls
+    #       var=$(git diff --name-only -r HEAD^1 HEAD)
+    #       # var=$(git log)
+    #       echo $var
+    #        curl -X POST https://8a81-14-194-6-234.ngrok-free.app/webhook/github \
+    #          -H "Content-Type: application/json" \
+    #          -d "{\"diff\": \"$var\"}"
     - name: Send POST requests for modified or added YAML files
       run: |
         for file in $(git diff --name-only --diff-filter=AM HEAD^1 HEAD | grep -E 'Charts/.*\.(yml|yaml)'); do
