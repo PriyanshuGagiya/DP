@@ -39,7 +39,7 @@ jobs:
             --arg reason "$reason" \
             --argjson deleted "$deleted" \
             '{file: $file, author: {name: $author_name, email: $author_email, time: $commit_time}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
-          curl -X POST -H "Content-Type: application/json" -d "$payload" "$SPRING_BOOT_URL"
+          curl -X POST -H "Content-Type: application/json" -d "$payload" $SPRING_BOOT_URL
         done
 
       
