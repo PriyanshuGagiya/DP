@@ -21,7 +21,8 @@ jobs:
       env:
           SPRING_BOOT_URL: ${{ secrets.SPRING_BOOT_URL }}
       run: |
-        payload_array=()
+        payload_array="["
+        first=true
         while IFS= read -r file; do
           author_name=$(git log -1 --pretty=format:'%an' -- "$file")
           author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
@@ -42,9 +43,16 @@ jobs:
             --arg reason "$reason" \
             --argjson deleted "$deleted" \
             '{file: $file, author: {name: $author_name, email: $author_email, time: $commit_time}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
-          payload_array+=("$payload")
+          if [ "$first" = true ]; then
+            payload_array="$payload_array$payload"
+            first=false
+          else
+            payload_array="$payload_array,$payload"
+          fi
         done < <(git diff --name-only --diff-filter=AM HEAD^1 HEAD | grep -E 'Charts/.*\.(yml|yaml)')
-        curl -X POST -H "Content-Type: application/json" -d "$(jq -n --argjson payloads "${payload_array[*]}" '$payloads')" "$SPRING_BOOT_URL"
+        payload_array="$payload_array]"
+        curl -X POST -H "Content-Type: application/json" -d "$payload_array" "$SPRING_BOOT_URL"
+
 
 # name: YAML Change Notifier for Charts
 
