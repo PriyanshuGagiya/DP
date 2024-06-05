@@ -27,7 +27,6 @@ jobs:
         for file in $(git diff --name-only --diff-filter=AM HEAD^1 HEAD | grep -E 'Charts/.*\.(yml|yaml)'); do
             author_name=$(git log -1 --pretty=format:'%an' -- "$file")
             author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
-            commit_time=$(git log -1 --pretty=format:'%cI' -- "$file")
             key=$(yq eval '.key' "$file")
             property=$(yq eval '.property' "$file")
             value=$(yq eval '.value' "$file")
