@@ -42,7 +42,7 @@ jobs:
                 --argjson value "$value" \
                 --arg reason "$reason" \
                 --argjson deleted "$deleted" \
-                '{file: $file, author: {name: $author_name, email: $author_email, time: $commit_time}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
+                '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, property: $property, value: $value, reason: $reason, deleted: $deleted}')
         
             if [ "$first" = true ]; then
                 payload_array="$payload_array$payload"
