@@ -38,7 +38,7 @@ jobs:
                     --arg name "$name" \
                     --arg changes "$changes" \
                     '{file: $file, author: {name: $author_name, email: $author_email}, name: $name, changes: $changes}')
-            elif [[ "$file" == Charts/dynamicProperty/* ]]; then
+            else 
                 key=$(yq eval '.key' "$file")
                 changes=$(git diff HEAD^1 HEAD -- "$file" | grep '^[+-]' | grep -Ev '^\+\+\+|---')
                 payload=$(jq -n \
