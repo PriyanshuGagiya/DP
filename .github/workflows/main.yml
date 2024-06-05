@@ -29,26 +29,23 @@ jobs:
             if [[ "$file" == Charts/serverConfig/* ]]; then
                 name=$(yq eval '.name' "$file")
                 changes=$(git diff HEAD^1 HEAD -- "$file" | grep '^[+-]' | grep -Ev '^\+\+\+|---')
-                changes_json=$(echo "$changes" | awk '{
-                    gsub("^[+-]", "")
-                    split($0, arr, " : ")
-                    key=arr[1]
-                    value=arr[2]
-                    gsub(" ", "", key)
-                    gsub(/^ /, "", value)
-                    gsub(/ $/, "", value)
-                    gsub(/"$/, "", value)
-                    gsub(/^"/, "", value)
-                    if (value ~ /^true|false$/) {
-                        printf "\"%s\":%s", key, value
-                    } else {
-                        printf "\"%s\":\"%s\"", key, value
+                changes_json=$(echo "$changes" | awk '
+                    BEGIN { ORS=""; print "{" }
+                    {
+                        gsub("^[+-]", "", $0)
+                        split($0, arr, ": ")
+                        key=arr[1]
+                        value=arr[2]
+                        gsub(/^ +| +$/, "", key)
+                        gsub(/^ +| +$/, "", value)
+                        if (NR > 1) { print "," }
+                        if (value ~ /^true|false$/) {
+                            printf "\"%s\":%s", key, value
+                        } else {
+                            printf "\"%s\":\"%s\"", key, value
+                        }
                     }
-                    if (NR != NR+1) {
-                        printf ","
-                    }
-                }')
-                changes_json="{$changes_json}"
+                    END { print "}" }')
                 payload=$(jq -n \
                     --arg file "$file" \
                     --arg author_name "$author_name" \
@@ -59,26 +56,23 @@ jobs:
             else 
                 key=$(yq eval '.key' "$file")
                 changes=$(git diff HEAD^1 HEAD -- "$file" | grep '^[+-]' | grep -Ev '^\+\+\+|---')
-                changes_json=$(echo "$changes" | awk '{
-                    gsub("^[+-]", "")
-                    split($0, arr, " : ")
-                    key=arr[1]
-                    value=arr[2]
-                    gsub(" ", "", key)
-                    gsub(/^ /, "", value)
-                    gsub(/ $/, "", value)
-                    gsub(/"$/, "", value)
-                    gsub(/^"/, "", value)
-                    if (value ~ /^true|false$/) {
-                        printf "\"%s\":%s", key, value
-                    } else {
-                        printf "\"%s\":\"%s\"", key, value
+                changes_json=$(echo "$changes" | awk '
+                    BEGIN { ORS=""; print "{" }
+                    {
+                        gsub("^[+-]", "", $0)
+                        split($0, arr, ": ")
+                        key=arr[1]
+                        value=arr[2]
+                        gsub(/^ +| +$/, "", key)
+                        gsub(/^ +| +$/, "", value)
+                        if (NR > 1) { print "," }
+                        if (value ~ /^true|false$/) {
+                            printf "\"%s\":%s", key, value
+                        } else {
+                            printf "\"%s\":\"%s\"", key, value
+                        }
                     }
-                    if (NR != NR+1) {
-                        printf ","
-                    }
-                }')
-                changes_json="{$changes_json}"
+                    END { print "}" }')
                 payload=$(jq -n \
                     --arg file "$file" \
                     --arg author_name "$author_name" \
@@ -98,6 +92,7 @@ jobs:
         
         payload_array="$payload_array]"
         curl -X POST -H "Content-Type: application/json" -d "$payload_array" "$SPRING_BOOT_URL"
+
 
 # name: YAML Change Notifier for Charts all property
 
