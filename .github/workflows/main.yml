@@ -46,6 +46,7 @@ jobs:
                         }
                     }
                     END { print "}" }')
+                changes_json=$(jq -n --argjson changes "$changes_json" '$changes')
                 payload=$(jq -n \
                     --arg file "$file" \
                     --arg author_name "$author_name" \
@@ -73,6 +74,7 @@ jobs:
                         }
                     }
                     END { print "}" }')
+                changes_json=$(jq -n --argjson changes "$changes_json" '$changes')
                 payload=$(jq -n \
                     --arg file "$file" \
                     --arg author_name "$author_name" \
@@ -81,7 +83,7 @@ jobs:
                     --argjson changes "$changes_json" \
                     '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, changes: $changes}')
             fi
-        
+
             if [ "$first" = true ]; then
                 payload_array="$payload_array$payload"
                 first=false
