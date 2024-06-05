@@ -17,11 +17,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: '3'
-    - name: Install yq and jq
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
-        sudo pip install yq
     - name: Collect and Send POST requests for modified or added YAML files
       env:
         SPRING_BOOT_URL: https://1f98-203-110-85-250.ngrok-free.app/api/dp
