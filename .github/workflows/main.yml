@@ -19,7 +19,7 @@ jobs:
         fetch-depth: '3'
     - name: Collect and Send POST requests for modified or added YAML files
       env:
-        SPRING_BOOT_URL: https://1f98-203-110-85-250.ngrok-free.app/api/dp
+        SPRING_BOOT_URL: https://660a-115-246-67-91.ngrok-free.app/api/dp
       run: |
         payload_array="["
         first=true
