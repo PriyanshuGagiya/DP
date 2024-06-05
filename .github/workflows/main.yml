@@ -28,17 +28,7 @@ jobs:
             author_name=$(git log -1 --pretty=format:'%an' -- "$file")
             author_email=$(git log -1 --pretty=format:'%ae' -- "$file")
 
-            if [[ "$file" == Charts/dynamicProperty/* ]]; then
-                key=$(yq eval '.key' "$file")
-                changes=$(git diff HEAD^1 HEAD -- "$file" | grep '^[+-]' | grep -Ev '^\+\+\+|---')
-                payload=$(jq -n \
-                    --arg file "$file" \
-                    --arg author_name "$author_name" \
-                    --arg author_email "$author_email" \
-                    --arg key "$key" \
-                    --arg changes "$changes" \
-                    '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, changes: $changes}')
-            elif [[ "$file" == Charts/sprProperty/* ]]; then
+            if [[ "$file" == Charts/serverConfig/* ]]; then
                 name=$(yq eval '.name' "$file")
                 changes=$(git diff HEAD^1 HEAD -- "$file" | grep '^[+-]' | grep -Ev '^\+\+\+|---')
                 payload=$(jq -n \
@@ -48,6 +38,16 @@ jobs:
                     --arg name "$name" \
                     --arg changes "$changes" \
                     '{file: $file, author: {name: $author_name, email: $author_email}, name: $name, changes: $changes}')
+            elif [[ "$file" == Charts/dynamicProperty/* ]]; then
+                key=$(yq eval '.key' "$file")
+                changes=$(git diff HEAD^1 HEAD -- "$file" | grep '^[+-]' | grep -Ev '^\+\+\+|---')
+                payload=$(jq -n \
+                    --arg file "$file" \
+                    --arg author_name "$author_name" \
+                    --arg author_email "$author_email" \
+                    --arg key "$key" \
+                    --arg changes "$changes" \
+                    '{file: $file, author: {name: $author_name, email: $author_email}, key: $key, changes: $changes}')
             fi
         
             if [ "$first" = true ]; then
