@@ -1,10 +1,4 @@
-key : abc.12hellofirsttimepr
-property: abc.12345ds6
-value : 11
-reason : "i chaed this tx his time it wix x ll ahow"
-deleted : false
-
-
-
-
-
+_class: "com.spr.props.SprProperty"
+key: "42mattersapi.accesstoken"
+value: "4d8da7b9b2cbd649a11c728f7198283b7b5159b3"
+isSecure: false

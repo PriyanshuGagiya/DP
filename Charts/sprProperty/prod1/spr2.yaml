@@ -1,5 +1,4 @@
-key : abc.sahhvsahv.12344
-property: abc.dshvchdas.1234
-value : 10
-reason : "priyanshu changed xxxx xv zgh absv this and gvavh spting 2222 please ryn"
-deleted : true
+_class: "com.spr.props.SprProperty"
+key: "42mattersapi.accesstoken"
+value: "4d8da7b9b2cbd649a11c728f7198283b7b5159b3"
+isSecure: false
