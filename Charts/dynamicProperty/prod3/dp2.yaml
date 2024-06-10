@@ -1,5 +1,5 @@
-key : abc.sahhvsahv.1234
-property: abc.dshvchdas.1234
-value : true
-reason : "priyanshu changed  xv zgh absv this and gvavh spting 2222 please ryn"
-deleted : true
+key: "ebay.channel.enabled.66000000"
+deleted: false
+property: "EBAY_CHANNEL_ENABLED"
+reason: "testing"
+value: "false"

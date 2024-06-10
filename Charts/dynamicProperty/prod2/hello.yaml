@@ -1,5 +1,5 @@
-key : abc.12hellofirsttimep
-property: abc.12345ds6
-value : 10
-reason : "i chaed this tx his time it wix x ll ahow"
-deleted : true
+key: "ebay.channel.enabled.66000000"
+deleted: false
+property: "EBAY_CHANNEL_ENABLED"
+reason: "testing"
+value: "false"
