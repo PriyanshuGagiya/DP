@@ -1,0 +1,5 @@
+key: "whatsapp.business.webhook.logging.enabled.all-partners"
+deleted: false
+property: "WHATSAPP_BUSINESS_WEBHOOK_LOGGING_ENABLED"
+reason: "enable"
+value: "false"
