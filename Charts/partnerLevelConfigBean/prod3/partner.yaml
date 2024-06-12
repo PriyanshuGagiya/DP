@@ -15,7 +15,7 @@ config:
   existingRecordsScrollBatchSize: 1000
   existingRecordsRemoveBatchSize: 10000
   shiftRelatedNotificationBuffer:
-    - 180
+    - 1800
     - 3600000
   activityRelatedNotificationBuffer:
     - 0
