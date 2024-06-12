@@ -13,3 +13,4 @@ config:
     - "WHATSAPP_BUSINESS"
     - "INSTAGRAM"
     - "SUNSHINE"
+_class: "com.spr.voice.beans.PartnerLevelConfigBean"

@@ -5,3 +5,4 @@ config:
   module: "LIVE_REPORTING_WHITELISTED_CUSTOM_FIELDS"
   type: "LIVE_REPORTING_WHITELISTED_CUSTOM_FIELDS"
   configClassName: "com.spr.voice.beans.LiveReportingWhiteListedCustomFields"
+_class: "com.spr.voice.beans.PartnerLevelConfigBean"

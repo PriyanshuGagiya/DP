@@ -14,3 +14,4 @@ config:
     CASE_MACRO_USAGE:
       deletedDimensionName: DELETED
       report: CASE_MACRO_USAGE
+_class: com.spr.voice.beans.PartnerLevelConfigBean
