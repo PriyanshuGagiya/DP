@@ -13,9 +13,9 @@ config:
   createUserScheduleRecords: true
   numThreads: 5
   existingRecordsScrollBatchSize: 1000
-  existingRecordsRemoveBatchSize: 1000
+  existingRecordsRemoveBatchSize: 10000
   shiftRelatedNotificationBuffer:
-    - 18000000
+    - 180
     - 3600000
   activityRelatedNotificationBuffer:
     - 0
