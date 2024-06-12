@@ -20,7 +20,7 @@ config:
   activityRelatedNotificationBuffer:
     - 0
     - 600000
-  loginTimeRangeStartOffset: 180
+  loginTimeRangeStartOffset: 1800
   loginTimeRangeEndOffset: 3600000
   wfmStatusVsUserStatus:
     NOT_WORKING:
