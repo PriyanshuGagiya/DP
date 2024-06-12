@@ -12,10 +12,10 @@ config:
   createRecordsInline: true
   createUserScheduleRecords: true
   numThreads: 5
-  existingRecordsScrollBatchSize: 1001
+  existingRecordsScrollBatchSize: 10000
   existingRecordsRemoveBatchSize: 1000
   shiftRelatedNotificationBuffer:
-    - 1800001
+    - 18000000
     - 3600000
   activityRelatedNotificationBuffer:
     - 0
