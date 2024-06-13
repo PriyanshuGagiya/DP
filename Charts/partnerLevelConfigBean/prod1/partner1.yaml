@@ -1,5 +1,5 @@
 config:
-  partnerId: 16
+  partnerId: 1
   module: UNIVERSAL_CASE_PROPERTIES_SYNC
   type: UNIVERSAL_CASE_PROPERTIES_SYNC
   configClassName: com.spr.shifu.sla.UniversalCasePropertiesSyncDetails
