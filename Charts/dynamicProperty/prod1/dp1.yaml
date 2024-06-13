@@ -1,5 +1,5 @@
 key: "ebay.channel.enabled.66000000"
-deleted: true
+deleted: false
 property: "EBAY_CHANNEL_ENABLED"
 reason: "testing"
 value: "false"
