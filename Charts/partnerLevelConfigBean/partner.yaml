@@ -1,0 +1,38 @@
+_class: com.spr.voice.beans.PartnerLevelConfigBean
+config:
+  partnerId: 66000042
+  module: WORKFORCE_MANAGEMENT
+  type: WFM_SCHEDULING_CONFIGURATION
+  configClassName: com.spr.wfm.auth.model.WfmSchedulingConfiguration
+  intuitionSchedulingJobType: wfmsc
+  testMode: false
+  testOutputMap: {}
+  testUserIdMapping: {}
+  generateSampleOnly: false
+  createRecordsInline: true
+  createUserScheduleRecords: true
+  numThreads: 5
+  existingRecordsScrollBatchSize: 1000
+  existingRecordsRemoveBatchSize: 10000
+  shiftRelatedNotificationBuffer:
+    - 1800
+    - 3600000
+  activityRelatedNotificationBuffer:
+    - 0
+    - 600000
+  loginTimeRangeStartOffset: 1800
+  loginTimeRangeEndOffset: 3600000
+  wfmStatusVsUserStatus:
+    NOT_WORKING:
+      - Unavailable
+    ON_BREAK:
+      - Busy
+      - Connection issue
+      - Away
+    WORKING:
+      - Available
+  granularity: 300000
+  enabledNotificationEvenTypes:
+    - WORKFORCE_SHIFT_STARTING
+    - WORKFORCE_ACTIVITY_STARTING
+  scheduleValidationEnabled: false
