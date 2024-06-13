@@ -1,7 +1,7 @@
 config:
   enabledFields:
     - "5cc9a7d0e4b01904c8dfc965"
-  partnerId: 16117
+  partnerId: 161178
   module: "LIVE_REPORTING_WHITELISTED_CUSTOM_FIELDS"
   type: "LIVE_REPORTING_WHITELISTED_CUSTOM_FIELDS"
   configClassName: "com.spr.voice.beans.LiveReportingWhiteListedCustomFields"
