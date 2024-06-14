@@ -1,6 +1,6 @@
 dbName: "SPR_VOICE_66000042"
 url: "10.56.0.32:53421,10.56.0.105:53421"
-partnerId: 66000042
+partnerId: 6677
 clientId: -1
 serverCategory: "MONGO"
 serverType: "VOICE"
