@@ -1,6 +1,6 @@
 _class: com.spr.voice.beans.PartnerLevelConfigBean
 config:
-  partnerId: 66000042
+  partnerId: 660000427878
   module: WORKFORCE_MANAGEMENT
   type: WFM_SCHEDULING_CONFIGURATION
   configClassName: com.spr.wfm.auth.model.WfmSchedulingConfiguration
