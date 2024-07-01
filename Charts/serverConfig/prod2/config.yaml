@@ -1,0 +1,8 @@
+dbName: "SPR_VOICE_66000042"
+url: "10.56.0.32:53421,10.56.0.105:53421"
+partnerId: 667788
+clientId: -1
+serverCategory: "MONGO"
+serverType: "VOICE"
+name: "MONGO-VOICE-66000042--1"
+_class: "com.spr.core.config.MongoServerConfig"
